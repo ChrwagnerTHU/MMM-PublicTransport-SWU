@@ -1,11 +1,11 @@
 /* Magic Mirror
  * Module: SWU Departures
  *
- * By [Your Name Here]
+ * By Christopher Wagner
  * MIT Licensed.
  */
 
-Module.register("swu-departures", {
+Module.register("swu_departures", {
 
     // Default module config.
     defaults: {
@@ -13,7 +13,14 @@ Module.register("swu-departures", {
       limit: 5, // Change this to the number of departures you want to display
       updateInterval: 60000, // Update the display every minute (in ms)
     },
-  
+
+    // Method to report when loaded
+    loaded: function(callback) {
+      this.finishLoading();
+      Log.log(this.name + ' is loaded!');
+      callback();
+    },
+    
     // Define start sequence.
     start: function() {
       Log.info("Starting module: " + this.name);
