@@ -24,36 +24,58 @@ Module.register("MM2_PublicTransport-SWU", {
   
     // Override dom generator.
     getDom: function() {
-      var wrapper = document.createElement("div");
-      wrapper.className = "small";
-  
-      // Loop through departure data and create elements for each departure
+      var tableWrapper = document.createElement("table");
+      tableWrapper.className = "swu-departure-table";
+      tableWrapper.style.padding = "10px";
+      tableWrapper.style.textAlign = "left";
+
+      // Create table header row
+      var tableHeader = document.createElement("tr");
+      tableHeader.className = "swu-departure-table-header";
+      tableHeader.innerHTML = "<th style='padding: 5px;'>Plattform</th><th style='padding: 5px;'>Linie</th><th style='padding: 5px;'>Richtung</th><th style='padding: 5px;'>Abfahrt</th>";
+      tableWrapper.appendChild(tableHeader);
+
+      // Loop through departure data and create table rows for each departure
       for (var i = 0; i < this.departureData.length; i++) {
         var departure = this.departureData[i];
-        var platformName = document.createElement("div");
+
+        var tableRow = document.createElement("tr");
+        tableRow.className = "swu-departure-table-row";
+
+        var platformName = document.createElement("td");
         platformName.className = "swu-departure-platformName";
+        platformName.style.padding = "5px";
         platformName.innerHTML = departure.PlatformName;
-  
-        var routeNumber = document.createElement("div");
+        tableRow.appendChild(platformName);
+
+        var routeNumber = document.createElement("td");
         routeNumber.className = "swu-departure-routeNumber";
+        routeNumber.style.padding = "5px";
         routeNumber.innerHTML = departure.RouteNumber;
-  
-        var directionText = document.createElement("div");
+        tableRow.appendChild(routeNumber);
+
+        var directionText = document.createElement("td");
         directionText.className = "swu-departure-directionText";
+        directionText.style.padding = "5px";
         directionText.innerHTML = departure.DepartureDirectionText;
-  
-        var countdown = document.createElement("div");
+        tableRow.appendChild(directionText);
+
+        var countdown = document.createElement("td");
         countdown.className = "swu-departure-countdown";
-        countdown.innerHTML = departure.DepartureCountdown;
-  
-        // Add departure elements to wrapper
-        wrapper.appendChild(platformName);
-        wrapper.appendChild(routeNumber);
-        wrapper.appendChild(directionText);
-        wrapper.appendChild(countdown);
+        countdown.style.padding = "5px";
+        var countdownMinutes = Math.floor(departure.DepartureCountdown / 60);
+        if (countdownMinutes < 1){
+          countdown.innerHTML = "Jetzt"
+        } else {
+          countdown.innerHTML = countdownMinutes + " min";
+        }
+        tableRow.appendChild(countdown);
+
+        // Add table row to table wrapper
+        tableWrapper.appendChild(tableRow);
       }
-  
-      return wrapper;
+
+      return tableWrapper;
     },
   
     // Schedule update interval
