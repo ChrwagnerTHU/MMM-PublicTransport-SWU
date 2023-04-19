@@ -5,7 +5,7 @@
  * MIT Licensed.
  */
 
-Module.register("MM2_PublicTransport-SWU", {
+Module.register("MMM_PublicTransport-SWU", {
 
     // Default module config.
     defaults: {
