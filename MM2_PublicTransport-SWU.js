@@ -13,16 +13,9 @@ Module.register("MM2_PublicTransport-SWU", {
       limit: 5, // Change this to the number of departures you want to display
       updateInterval: 60000, // Update the display every minute (in ms)
     },
-
-    // Method to report when loaded
-    loaded: function(callback) {
-      this.finishLoading();
-      Log.log(this.name + ' is loaded!');
-      callback();
-    },
     
     // Define start sequence.
-    start: function() {
+    start: async function() {
       Log.info("Starting module: " + this.name);
       this.departureData = []; // Initialize departure data as empty array
       this.getDepartureData(); // Call API immediately to get initial data
