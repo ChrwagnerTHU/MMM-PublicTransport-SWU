@@ -9,8 +9,8 @@ Module.register("MMM-PublicTransport-SWU", {
 
     // Default module config.
     defaults: {
-      stopNumber: 1352, // Change this to the stop number you want to display
-      limit: 5, // Change this to the number of departures you want to display
+      stopNumber: 1008, // Change this to the stop number you want to display
+      limit: 10, // Change this to the number of departures you want to display
       updateInterval: 60000, // Update the display every minute (in ms)
     },
     
