@@ -26,6 +26,7 @@ Module.register("MMM-PublicTransport-SWU", {
     // Override dom generator.
     getDom: function() {
 
+      // Create main wrapper
       var wrapper = document.createElement("div");
       wrapper.className = "swu-departure-wrapper";
 
@@ -34,6 +35,7 @@ Module.register("MMM-PublicTransport-SWU", {
       headerWrapper.className = "swu-departure-header";
       headerWrapper.innerHTML = this.config.stopString;
 
+      // Create table wrapper
       var tableWrapper = document.createElement("table");
       tableWrapper.className = "swu-departure-table";
       tableWrapper.style.padding = "10px";
@@ -84,7 +86,7 @@ Module.register("MMM-PublicTransport-SWU", {
         // Add table row to table wrapper
         tableWrapper.appendChild(tableRow);
       }
-
+      
       // Append header and table to main wrapper
       wrapper.appendChild(headerWrapper);
       wrapper.appendChild(tableWrapper);
