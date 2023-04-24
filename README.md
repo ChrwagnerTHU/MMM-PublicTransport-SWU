@@ -51,7 +51,7 @@ To use this module, add it to the modules array in the `~/MagicMirror/config/con
     },
 ```
 
-To figure out the stop id of the stop you want to display, search the stop at [https://echtzeit.swu.de/haltestelle/abfahrtsmonitor#](this) website.
+To figure out the stop id of the stop you want to display, search the stop at [this](https://echtzeit.swu.de/haltestelle/abfahrtsmonitor#) website.
 
 ## Special Thanks
 - [Michael Teeuw](https://github.com/MichMich) for creating the awesome [MagicMirror2](https://github.com/MichMich/MagicMirror/tree/develop) project that made this module possible.
