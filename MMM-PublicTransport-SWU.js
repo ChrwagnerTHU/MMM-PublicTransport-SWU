@@ -10,6 +10,7 @@ Module.register("MMM-PublicTransport-SWU", {
     // Default module config.
     defaults: {
       stopNumber: 1008, // Change this to the stop number you want to display
+      stopString: "Hauptbahnhof", // Change this to the stop name you want to display
       limit: 10, // Change this to the number of departures you want to display
       updateInterval: 60000, // Update the display every minute (in ms)
     },
@@ -24,6 +25,15 @@ Module.register("MMM-PublicTransport-SWU", {
   
     // Override dom generator.
     getDom: function() {
+
+      var wrapper = document.createElement("div");
+      wrapper.className = "swu-departure-wrapper";
+
+      // Create header wrapper and add text
+      var headerWrapper = document.createElement("div");
+      headerWrapper.className = "swu-departure-header";
+      headerWrapper.innerHTML = this.config.stopString;
+
       var tableWrapper = document.createElement("table");
       tableWrapper.className = "swu-departure-table";
       tableWrapper.style.padding = "10px";
@@ -75,7 +85,11 @@ Module.register("MMM-PublicTransport-SWU", {
         tableWrapper.appendChild(tableRow);
       }
 
-      return tableWrapper;
+      // Append header and table to main wrapper
+      wrapper.appendChild(headerWrapper);
+      wrapper.appendChild(tableWrapper);
+
+      return wrapper;
     },
   
     // Schedule update interval
