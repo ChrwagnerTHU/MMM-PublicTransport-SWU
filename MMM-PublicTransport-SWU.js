@@ -30,6 +30,13 @@ Module.register("MMM-PublicTransport-SWU", {
       var wrapper = document.createElement("div");
       wrapper.className = "swu-departure-wrapper";
 
+      // If there is no departure data, display error message
+      if (this.departureData.length <= 0){
+        wrapper.innerHTML = "Dieser Service steht aktuell nicht zur Verfügung.";
+        wrapper.className = "dimmed light small";
+        return wrapper;
+      }
+
       // Create header wrapper and add text
       var headerWrapper = document.createElement("div");
       headerWrapper.className = "swu-departure-header";
