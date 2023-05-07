@@ -12,6 +12,7 @@ Module.register("MMM-PublicTransport-SWU", {
       stopString: "Hauptbahnhof", // Change this to the stop name you want to display
       limit: 10, // Change this to the number of departures you want to display
       updateInterval: 60000, // Update the display every minute (in ms)
+      showDelay: true,
     },
     
     // Define start sequence.
@@ -50,7 +51,7 @@ Module.register("MMM-PublicTransport-SWU", {
       // Create table header row
       var tableHeader = document.createElement("tr");
       tableHeader.className = "swu-departure-table-header";
-      tableHeader.innerHTML = "<th style='padding: 5px;'>Plattform</th><th style='padding: 5px;'>Linie</th><th style='padding: 5px;'>Richtung</th><th style='padding: 5px;'>Abfahrt</th>";
+      tableHeader.innerHTML = "<th style='padding: 5px;'>Plattform</th><th style='padding: 5px;'>Linie</th><th style='padding: 5px;'>Richtung</th><th style='padding: 5px;'>Abfahrt</th><th style='padding: 5px;'></th";
       tableWrapper.appendChild(tableHeader);
 
       // Loop through departure data and create table rows for each departure
@@ -88,6 +89,21 @@ Module.register("MMM-PublicTransport-SWU", {
           countdown.innerHTML = countdownMinutes + " min";
         }
         tableRow.appendChild(countdown);
+
+        var delay = document.createElement("td");
+        delay.style.padding = "5px";  
+        if (this.config.showDelay){
+          var delayMinutes = Math.floor(departure.DepartureDeviation / 60);
+          if (delayMinutes > 1){
+            var delay = document.createElement("td");
+            delay.style.padding = "5px";
+            delay.style.color = "red"
+            delay.innerHTML = "+ " + delayMinutes
+          } else {
+            delay.innerHTML = ""
+          }
+        }
+        tableRow.appendChild(delay);
 
         // Add table row to table wrapper
         tableWrapper.appendChild(tableRow);
