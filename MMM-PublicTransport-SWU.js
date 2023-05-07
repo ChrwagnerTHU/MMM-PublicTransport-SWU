@@ -46,12 +46,12 @@ Module.register("MMM-PublicTransport-SWU", {
       var tableWrapper = document.createElement("table");
       tableWrapper.className = "swu-departure-table";
       tableWrapper.style.padding = "10px";
-      tableWrapper.style.textAlign = "left";
+      //tableWrapper.style.textAlign = "left";
 
       // Create table header row
       var tableHeader = document.createElement("tr");
       tableHeader.className = "swu-departure-table-header";
-      tableHeader.innerHTML = "<th style='padding: 5px;'>Plattform</th><th style='padding: 5px;'>Linie</th><th style='padding: 5px;'>Richtung</th><th style='padding: 5px;'>Abfahrt</th><th style='padding: 5px;'></th";
+      tableHeader.innerHTML = "<th style='padding: 5px;'>Linie</th><th style='padding: 5px;'>Plattform</th><th style='padding: 5px;'>Richtung</th><th style='padding: 5px;'>Abfahrt</th><th style='padding: 5px;'></th";
       tableWrapper.appendChild(tableHeader);
 
       // Loop through departure data and create table rows for each departure
@@ -61,17 +61,19 @@ Module.register("MMM-PublicTransport-SWU", {
         var tableRow = document.createElement("tr");
         tableRow.className = "swu-departure-table-row";
 
+        var routeNumber = document.createElement("td");
+        routeNumber.className = "swu-departure-routeNumber";
+        var img = document.createElement("img");
+        img.src = "modules/MMM-PublicTransport-SWU/lines/Linie_" + departure.RouteNumber + "_Pikto.gif";
+        img.setAttribute("width", "20")
+        routeNumber.appendChild(img);
+        tableRow.appendChild(routeNumber);
+
         var platformName = document.createElement("td");
         platformName.className = "swu-departure-platformName";
         platformName.style.padding = "5px";
         platformName.innerHTML = departure.PlatformName;
         tableRow.appendChild(platformName);
-
-        var routeNumber = document.createElement("td");
-        routeNumber.className = "swu-departure-routeNumber";
-        routeNumber.style.padding = "5px";
-        routeNumber.innerHTML = departure.RouteNumber;
-        tableRow.appendChild(routeNumber);
 
         var directionText = document.createElement("td");
         directionText.className = "swu-departure-directionText";
