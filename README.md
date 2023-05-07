@@ -31,6 +31,7 @@ git pull
 |`stopString`|"Hauptbahnhof"|Name of stop you want to display.|
 |`limit`|10|Number of departures you want to display.|
 |`updateInterval`|60000|Update interval (in ms)|
+|`showDelay`|`true`|Show delay of departure (in m)|
 
 ## Using the module
 
