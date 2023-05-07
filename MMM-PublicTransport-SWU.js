@@ -2,7 +2,6 @@
  * Module: SWU Departures
  *
  * By Christopher Wagner
- * MIT Licensed.
  */
 
 Module.register("MMM-PublicTransport-SWU", {
