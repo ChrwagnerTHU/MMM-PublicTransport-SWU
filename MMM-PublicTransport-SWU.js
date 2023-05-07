@@ -101,7 +101,7 @@ Module.register("MMM-PublicTransport-SWU", {
     },
   
     // Schedule update interval
-    scheduleUpdate: function(delay) {
+    scheduleUpdate: function() {
       var nextLoad = this.config.updateInterval;
       if (typeof delay !== "undefined" && delay >= 0) {
         nextLoad = delay;
