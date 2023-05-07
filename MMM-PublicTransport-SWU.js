@@ -46,7 +46,7 @@ Module.register("MMM-PublicTransport-SWU", {
       var tableWrapper = document.createElement("table");
       tableWrapper.className = "swu-departure-table";
       tableWrapper.style.padding = "10px";
-      //tableWrapper.style.textAlign = "left";
+      tableWrapper.style.textAlign = "left";
 
       // Create table header row
       var tableHeader = document.createElement("tr");
