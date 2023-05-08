@@ -51,8 +51,9 @@ To use this module, add it to the modules array in the `~/MagicMirror/config/con
         }
     },
 ```
-
 To figure out the stop id of the stop you want to display, search the stop at [this](https://echtzeit.swu.de/haltestelle/abfahrtsmonitor#) website.
+#### Screenshot
+![Screenshot of module](MMM-PublicTransport-SWU_Screenshot.png "Screenshot of module")
 
 ## Special Thanks
 - [Michael Teeuw](https://github.com/MichMich) for creating the awesome [MagicMirror2](https://github.com/MichMich/MagicMirror/tree/develop) project that made this module possible.
