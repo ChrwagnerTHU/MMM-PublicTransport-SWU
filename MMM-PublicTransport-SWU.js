@@ -73,7 +73,7 @@ Module.register("MMM-PublicTransport-SWU", {
             routeNumber.className = "swu-departure-routeNumber";
             var img = document.createElement("img");
             img.src = "modules/MMM-PublicTransport-SWU/lines/Linie_" + departure.RouteNumber + "_Pikto.gif";
-            img.setAttribute("width", "20")
+            img.setAttribute("width", "20");
             routeNumber.appendChild(img);
             tableRow.appendChild(routeNumber);
 
@@ -94,7 +94,7 @@ Module.register("MMM-PublicTransport-SWU", {
             countdown.style.padding = "5px";
             var countdownMinutes = Math.floor(departure.DepartureCountdown / 60);
             if (countdownMinutes < 1){
-              countdown.innerHTML = "Jetzt"
+              countdown.innerHTML = "Jetzt";
             } else {
               countdown.innerHTML = countdownMinutes + " min";
             }
@@ -107,10 +107,10 @@ Module.register("MMM-PublicTransport-SWU", {
               if (delayMinutes > 0){
                 var delay = document.createElement("td");
                 delay.style.padding = "5px";
-                delay.style.color = "red"
-                delay.innerHTML = "+ " + delayMinutes
+                delay.style.color = "red";
+                delay.innerHTML = "+ " + delayMinutes;
               } else {
-                delay.innerHTML = ""
+                delay.innerHTML = "";
               }
             }
             tableRow.appendChild(delay);
