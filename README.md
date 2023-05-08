@@ -32,6 +32,7 @@ git pull
 |`limit`|10|Number of departures you want to display.|
 |`updateInterval`|60000|Update interval (in ms)|
 |`showDelay`|`false`|Show delay of departure (in m)|
+|`showPlattform`|[]|Array of plattform ids to be displayed. Example: ['A'] for only plattform A; ['A','B'] for plattforms A and B|
 
 ## Using the module
 
