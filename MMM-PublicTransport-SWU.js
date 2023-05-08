@@ -104,7 +104,7 @@ Module.register("MMM-PublicTransport-SWU", {
             delay.style.padding = "5px";  
             if (this.config.showDelay){
               var delayMinutes = Math.floor(departure.DepartureDeviation / 60);
-              if (delayMinutes > 1){
+              if (delayMinutes > 0){
                 var delay = document.createElement("td");
                 delay.style.padding = "5px";
                 delay.style.color = "red"
