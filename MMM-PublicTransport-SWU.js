@@ -12,7 +12,7 @@ Module.register("MMM-PublicTransport-SWU", {
       stopString: "Hauptbahnhof", // Change this to the stop name you want to display
       limit: 10, // Change this to the number of departures you want to display
       updateInterval: 60000, // Update the display every minute (in ms)
-      showDelay: true,
+      showDelay: false,
     },
     
     // Define start sequence.
