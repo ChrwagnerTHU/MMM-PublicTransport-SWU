@@ -33,6 +33,7 @@ git pull
 |`updateInterval`|60000|Update interval (in ms)|
 |`showDelay`|`false`|Show delay of departure (in m)|
 |`showPlattform`|[]|Array of plattform ids to be displayed.<br>Examples:<br>['A'] - only plattform A<br>['A','B'] - plattforms A and B<br>[] - all plattforms|
+|`timetostop`|5|Number of minutes you need to reach the stop (affects table coloring).|
 
 ## Using the module
 
@@ -49,10 +50,16 @@ To use this module, add it to the modules array in the `~/MagicMirror/config/con
             stopString: "Hauptbahnhof",
             limit: 5,
             updateInterval: 60000,
+            timetostop: 5,
         }
     },
 ```
 To figure out the stop id of the stop you want to display, search the stop at [this](https://echtzeit.swu.de/haltestelle/abfahrtsmonitor#) website.
+### Table coloring
+The departure table colors the countdown based on your `timetostop` value:
+- **Red**: Departure is less than `timetostop - 1` minutes away (too soon to reach).
+- **Gold**: Departure is within ±1 minute of your `timetostop` (perfect timing).
+- **Default**: All other cases.
 #### Screenshot
 ![Screenshot of module](MMM-PublicTransport-SWU_Screenshot.png "Screenshot of module")
 
