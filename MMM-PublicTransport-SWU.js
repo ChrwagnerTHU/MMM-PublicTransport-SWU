@@ -11,16 +11,25 @@ Module.register("MMM-PublicTransport-SWU", {
     stopNumber: 1008,             // Haltestellen-Nummer
     stopString: "Hauptbahnhof",   // Haltestellen-Name
     limit: 10,                    // Anzahl Abfahrten
+    maxMinutes: 0,                // Nur Abfahrten innerhalb dieser Minuten (0 = unbegrenzt)
     updateInterval: 60000,        // Update-Intervall (ms)
     showDelay: false,
     showPlattform: [],
     timetostop: 5,                // Gehzeit zur Haltestelle (Minuten)
+
+    // Datenquelle: "auto" (SWU, bei Ausfall DING), "swu" oder "ding"
+    provider: "auto",
+    dingBaseUrl: "https://www.ding.eu/ding3/XSLT_DM_REQUEST",
+    dingStopPrefix: "de:08421",   // Stadtkreis Ulm (Neu-Ulm: de:09775)
   },
 
   // Define start sequence.
   start: function () {
     Log.info("Starting module: " + this.name);
     this.departureData = [];      // leeres Array initialisieren
+    this.loaded = false;
+    this.errorMessage = null;
+    this.source = null;
     this.getDepartureData();      // initial laden
     this.scheduleUpdate();        // regelmäßige Updates
   },
@@ -33,8 +42,20 @@ Module.register("MMM-PublicTransport-SWU", {
     wrapper.className = "swu-departure-wrapper";
 
     // Falls keine Daten da sind
-    if (!this.departureData || this.departureData.length === 0) {
+    if (!this.loaded) {
+      wrapper.innerHTML = "Lädt...";
+      wrapper.className = "dimmed light small";
+      return wrapper;
+    }
+
+    if (this.errorMessage) {
       wrapper.innerHTML = "Dieser Service steht aktuell nicht zur Verfügung.";
+      wrapper.className = "dimmed light small";
+      return wrapper;
+    }
+
+    if (!this.departureData || this.departureData.length === 0) {
+      wrapper.innerHTML = "Keine Abfahrten";
       wrapper.className = "dimmed light small";
       return wrapper;
     }
@@ -70,6 +91,15 @@ Module.register("MMM-PublicTransport-SWU", {
 
       var departure = this.departureData[i];
 
+      var remainingMs = Number(departure.DepartureTime) - Date.now();
+      var countdownMinutes = Math.floor(remainingMs / 60000);
+      if (countdownMinutes < 0) {
+        countdownMinutes = 0;
+      }
+
+      // Zeitfenster: die Liste ist aufsteigend sortiert, danach liegt alles weiter weg
+      if (this.config.maxMinutes > 0 && countdownMinutes > this.config.maxMinutes) break;
+
       // Plattform-Filter
       if (
         this.config.showPlattform.length === 0 ||
@@ -84,6 +114,10 @@ Module.register("MMM-PublicTransport-SWU", {
         var img = document.createElement("img");
         img.src = "modules/MMM-PublicTransport-SWU/lines/Linie_" + departure.RouteNumber + "_Pikto.gif";
         img.setAttribute("width", "20");
+        // Für Linien ohne Piktogramm die Liniennummer als Text zeigen
+        img.onerror = function () {
+          routeNumber.innerHTML = departure.RouteNumber;
+        };
         routeNumber.appendChild(img);
         tableRow.appendChild(routeNumber);
 
@@ -105,9 +139,6 @@ Module.register("MMM-PublicTransport-SWU", {
         var countdown = document.createElement("td");
         countdown.className = "swu-departure-countdown";
         countdown.style.padding = "5px";
-
-        var rawSeconds = Number(departure.DepartureCountdown) || 0;
-        var countdownMinutes = Math.floor(rawSeconds / 60);
 
         // Text
         countdown.innerHTML = countdownMinutes < 1 ? "Jetzt" : (countdownMinutes + " min");
@@ -131,8 +162,7 @@ Module.register("MMM-PublicTransport-SWU", {
         var delayCell = document.createElement("td");
         delayCell.style.padding = "5px";
         if (this.config.showDelay) {
-          var devSec = Number(departure.DepartureDeviation) || 0;
-          var delayMinutes = Math.floor(devSec / 60);
+          var delayMinutes = Number(departure.DelayMinutes) || 0;
           if (delayMinutes > 0) {
             delayCell.style.color = "red";
             delayCell.innerHTML = "+ " + delayMinutes;
@@ -149,7 +179,19 @@ Module.register("MMM-PublicTransport-SWU", {
 
     // Zusammenbauen
     wrapper.appendChild(headerWrapper);
-    wrapper.appendChild(tableWrapper);
+
+    // Außerhalb der Betriebszeiten liegt nichts im Zeitfenster – dann statt
+    // einer leeren Tabelle einen Hinweis zeigen
+    if (countLines === 0) {
+      var emptyNote = document.createElement("div");
+      emptyNote.className = "dimmed light small";
+      emptyNote.innerHTML = this.config.maxMinutes > 0
+        ? "Keine Abfahrten in den nächsten " + this.config.maxMinutes + " Minuten"
+        : "Keine Abfahrten";
+      wrapper.appendChild(emptyNote);
+    } else {
+      wrapper.appendChild(tableWrapper);
+    }
 
     return wrapper;
   },
@@ -162,33 +204,32 @@ Module.register("MMM-PublicTransport-SWU", {
     }, this.config.updateInterval);
   },
 
-  // API aufrufen und Daten speichern
+  // Abruf an den node_helper delegieren (umgeht CORS im Browser)
   getDepartureData: function () {
-    var url = "https://api.swu.de/mobility/v1/stop/passage/Departures?StopNumber=" +
-      encodeURIComponent(this.config.stopNumber) +
-      "&Limit=" + encodeURIComponent(this.config.limit * 5);
+    this.sendSocketNotification("SWU_GET_DEPARTURES", {
+      identifier: this.identifier,
+      config: this.config,
+    });
+  },
 
-    var self = this;
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-      if (this.readyState === 4) {
-        if (this.status === 200) {
-          try {
-            var json = JSON.parse(this.responseText);
-            self.departureData =
-              (json && json.StopPassage && json.StopPassage.DepartureData) || [];
-          } catch (e) {
-            Log.error(self.name + " - JSON parse error:", e);
-            self.departureData = [];
-          }
-        } else {
-          Log.error(self.name + " - HTTP error: " + this.status);
-        }
-        self.updateDom();
-      }
-    };
-    xhttp.open("GET", url, true);
-    xhttp.send();
+  socketNotificationReceived: function (notification, payload) {
+    if (!payload || payload.identifier !== this.identifier) {
+      return;
+    }
+
+    if (notification === "SWU_DEPARTURES") {
+      this.departureData = payload.departures || [];
+      this.errorMessage = null;
+      this.source = payload.source;
+      this.loaded = true;
+      this.updateDom();
+    } else if (notification === "SWU_ERROR") {
+      Log.error(this.name + " - " + payload.error);
+      this.departureData = [];
+      this.errorMessage = payload.error;
+      this.loaded = true;
+      this.updateDom();
+    }
   },
 
 });
